@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>SDM Playground</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    /* Base and reset */
+    *, *::before, *::after {
+      box-sizing: border-box;
+    }
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #f8fafc;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      color: #222;
+    }
+   h2 {
+     margin-top: 0;
+     margin-bottom: 0.5em;
+   }
+   p {
+     margin-top: 0.5em;
+     margin-bottom: 1em;
+   }
+
+    /* Header styles */
+    header {
+      width: 100%;
+      background: linear-gradient(90deg, #1f1e1e, #1f1e1e);
+      box-sizing: border-box;
+      user-select: none;
+    }
+    header > div {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    header h1 {
+      font-size: 1.8rem;
+      font-weight: 700;
+      margin: 0;
+      flex-shrink: 0;
+      color: white;
+    }
+    nav {
+      display: flex;
+      gap: 1.5rem;
+    }
+    nav a {
+      color: white;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 1rem;
+      padding: 0.25rem 0.5rem;
+      transition: background-color 0.3s ease, border-bottom 0.3s ease;
+      border-bottom: 3px solid transparent;
+      border-radius: 2px;
+    }
+    nav a:hover,
+    nav a:focus {
+      background-color: rgba(255, 255, 255, 0.2);
+      outline: none;
+    }
+    nav a[aria-current="page"] {
+      border-bottom-color: #f3f0ff;
+      cursor: default;
+    }
+  
+    /* Main content */
+    main {
+      flex-grow: 1;
+      max-width: 900px;
+      width: 90%;
+      margin: 2rem auto 3rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Zone styling */
+    section.zone {
+      background: white;
+      border-radius: 22px;
+      padding: 2rem;
+      box-shadow: 0 2px 10px #e6e7ee;
+      min-height: 130px;
+      position: relative;
+    }
+
+    /* Step heading */
+    .step {
+      font-size: 1.3rem;
+      font-weight: 600;
+      margin-bottom: 1.2em;
+      display: flex;
+      align-items: center;
+      gap: 0.5em;
+      user-select: none;
+      color: #111;
+    }
+
+    /* Puzzle card */
+    .puzzle-zone {
+      background: #f0f0f0;
+      border-radius: 14px;
+      padding: 1rem;
+      margin-bottom: 1rem;
+      min-height: 80px;
+      word-break: break-word;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      align-items: center;
+      user-select: none;
+    }
+    .puzzle-zone .puzzle-desc {
+      font-size: 1.05em;
+      text-align: center;
+      margin: 0;
+      color: #444;
+    }
+
+    /* Drag container */
+    .drag-contain {
+      display: flex;
+      flex-direction: column;
+      gap: 0.8rem;
+      width: 100%;
+      justify-content: flex-start;
+      overflow-x: hidden;
+      padding-bottom: 0;
+      box-sizing: border-box;
+    }
+
+    /* Draggable pills */
+    .draggable {
+      background: #444;
+      border-radius: 12px;
+      font-size: 1em;
+      line-height: 1.3;
+      display: flex;
+      align-items: center;
+      padding-left: 1em;
+      cursor: grab;
+      box-shadow: 0 1px 4px #888;
+      color: white;
+      text-align: left;
+      max-width: 100%;
+      box-sizing: border-box;
+      user-select: none;
+      transition: background-color 0.3s ease;
+    }
+    .draggable:active {
+      cursor: grabbing;
+      background-color: #666;
+      box-shadow: 0 4px 10px #666;
+    }
+
+    /* Drop container pill */
+    .dropzone {
+      background: #eee;
+      border: 2px dashed #666;
+      color: #444;
+      min-width: 100%;
+      justify-content: center;
+      text-align: center;
+      user-select: none;
+      border-radius: 12px;
+      padding-left: 1em;
+      line-height: 1.3;
+      font-size: 1em;
+      display: flex;
+      align-items: center;
+      cursor: default;
+      box-sizing: border-box;
+      transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    /* Drop container feedback styles */
+    .dropzone.solved {
+      background-color: #27ae60 !important;  /* green */
+      border-color: #1e8449 !important;
+      color: #fff !important;
+      font-weight: 600;
+      box-shadow: 0 0 8px #1e8449;
+    }
+    .dropzone.wrong {
+      background-color: #e74c3c !important; /* red */
+      border-color: #992d22 !important;
+      color: #fff !important;
+      font-weight: 600;
+      box-shadow: 0 0 8px #992d22;
+    }
+
+    .feedback {
+      margin-top: 0.4rem;
+      font-style: italic;
+      font-size: 0.94rem;
+      color: #555;
+      min-height: 1.2em;
+      user-select: none;
+    }
+
+    /* Slider with black/gray style */
+    input[type=range] {
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      appearance: none;
+      width: 80%;
+      height: 8px;
+      background: #ddd;
+      border-radius: 4px;
+      outline: none;
+      cursor: pointer;
+      margin: 1rem 0 0.7rem;
+    }
+    input[type=range]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 20px;
+      height: 20px;
+      background: #333;
+      cursor: pointer;
+      border-radius: 50%;
+      border: 1px solid #444;
+      margin-top: -6px;
+      transition: background-color 0.3s ease;
+    }
+    input[type=range]::-webkit-slider-thumb:hover {
+      background-color: #555;
+    }
+    input[type=range]::-moz-range-thumb {
+      appearance: none;
+      width: 20px;
+      height: 20px;
+      background: #333;
+      border: 1px solid #444;
+      border-radius: 50%;
+      cursor: pointer;
+    }
+
+    #balanceLabel {
+      margin-top: 0.5rem;
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: #444;
+      text-align: center;
+      min-height: 1.2em;
+      user-select: none;
+    }
+
+    /* Team selection */
+    .checkbox-group {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 1.5rem;
+      margin-top: 1rem;
+    }
+    .checkbox-group label {
+      font-size: 1.1rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      user-select: none;
+      color: #222;
+    }
+    .team-tag {
+      margin-top: 0.7rem;
+      font-weight: 600;
+      color: #0c192e;
+      font-size: 1rem;
+      text-align: center;
+      user-select: none;
+    }
+    button.quiz-btn {
+      background: #222;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      padding: 0.6rem 2rem;
+      font-weight: 600;
+      font-size: 1.1rem;
+      cursor: pointer;
+      margin-top: 1.5rem;
+      display: block;
+      margin-left: auto;
+      margin-right: auto;
+      user-select: none;
+      transition: background-color 0.3s ease;
+    }
+    button.quiz-btn:disabled {
+      background: #888;
+      cursor: not-allowed;
+    }
+    .badge {
+      margin-top: 1.5rem;
+      font-size: 1.3rem;
+      color: #333;
+      text-align: center;
+      min-height: 1.5em;
+      user-select: none;
+    }
+    .sdaction {
+      margin-top: 1rem;
+      font-size: 1.2rem;
+      line-height: 1.4;
+      text-align: center;
+      user-select: none;
+    }
+    .refresh-icon {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      width: 28px;
+      height: 28px;
+      cursor: pointer;
+      fill: #222222;
+      transition: fill 0.3s ease;
+      user-select: none;
+      z-index: 10;
+    }
+    .refresh-icon:hover, .refresh-icon:focus {
+      fill: #666;
+      outline: none;
+    }
+    footer {
+      background: #222;
+      color: white;
+      text-align: center;
+      padding: 1rem 2rem;
+      font-size: 0.9rem;
+      user-select: none;
+      margin-top: auto;
+    }
+    @media(max-width: 700px) {
+      header > div {
+        flex-wrap: wrap;
+      }
+      header h1 {
+        flex: 1 1 100%;
+        margin-bottom: 0.5rem;
+      }
+      nav a {
+        font-size: 0.95rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+  <div>
+    <div style="max-width: 1200px; margin: 0 auto; padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; user-select: none; width: 100%;">
+    <!-- Inline SVG logo with black fill -->
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2334.16 959.15" style="height: 40px; width: auto;" aria-label="Strategic Design Management Logo" role="img" focusable="false">
+      <defs>
+        <style>
+          .cls-1 {
+            fill: #ffffff;
+            stroke: #ffffff;
+            stroke-miterlimit: 10;
+            stroke-width: 2.83px;
+          }
+        </style>
+      </defs>
+      <path class="cls-1" d="M140.37,413.51v-147.57s-.38-52.28,42.32-94.98c42.7-42.7,92.55-35.62,92.55-35.62h278.04v138.87l-278.04.73v272.11h278.04v139.4h-278.04v135.19l278.04-1.53s63.13,0,96.45-35.23c33.32-35.23,36.26-67.02,36.26-67.02v-191.49s-6.26-51.26-30.51-73.21c-24.26-21.96-43.4-34.6-74.81-39.64H140.37Z"/>
+      <polygon class="cls-1" points="685.99 1.42 827.69 1.42 826.61 135.34 685.99 135.34 685.99 1.42"/>
+      <path class="cls-1" d="M826.61,135.34l1.09,139.6h405.89v411.51h-272.23v-272.94h-133.66v408.13h425.49s59.74-8.43,89.04-44.04c29.3-35.62,31.02-91.15,31.02-91.15v-411.51s-4.91-70.72-33.64-94.85c-28.72-24.13-54.26-41.23-106.02-44.74h-406.98Z"/>
+      <path class="cls-1" d="M1646.44,957.72s-47.94,1.15-91.02-33.32c-43.09-34.47-49.15-102.77-49.15-102.77h140.17v136.09Z"/>
+      <path class="cls-1" d="M141.72,686.44s-47.94,1.15-91.02-33.32C7.61,618.66,1.55,550.36,1.55,550.36h140.17v136.09Z"/>
+      <rect class="cls-1" x="1506.27" y="274.94" width="140.17" height="411.51"/>
+      <path class="cls-1" d="M1646.44,135.34s51,1.21,96.26,39.96c33.75,28.89,43.91,84.38,43.91,99.64h-140.17v-139.6Z"/>
+      <path class="cls-1" d="M1786.61,135.34v551.11h133.09v-411.51h139.4v411.51h272.86l.78,135.19h-133.28V274.94s-1.91-65.36-42.57-99.06c-30.05-24.91-64.6-36.13-98.81-40.53h-271.47Z"/>
+    </svg>
+    <nav aria-label="Primary site navigation">
+      <a href="index.html">Starter Pack</a>
+      <a href="sdmplayground.html" aria-current="page">Playground</a>
+      <a href="resources.html"  
+      style="color: white; font-weight: 600; 
+      font-size: 1rem; text-decoration: none;
+       padding: 0.25rem 0.5rem; border-bottom: 
+       3px solid transparent; border-radius: 2px;">Advance Pack</a>
+    </nav>
+  </div>
+</header>
+
+
+  <main>
+    <h2>Strategic Design Management Playground</h2>
+    <p>Welcome to the <i>Strategic Design Management Playground,</i>
+    an interactive space designed to put your strategic design skills in action. 
+    Explore practical challenges, balance creativity with strategy, 
+    and build collaborative teams through engaging puzzles, sliders, 
+    and quizzes.</p>
+    <section class="zone" id="designer-zone">
+      <div class="step">🎨 Think Like a Designer</div>
+      <div class="drag-puzzles-container" id="drag-puzzles"></div>
+    </section>
+    
+    <section class="zone" id="strategy-slide">
+      <div class="step">🗺️ Strategy Slide</div>
+      <div style="text-align:center">
+        Design is about useful solutions, not just looks.<br/>
+        Slide to balance creativity and strategy<br/>
+        <input type="range" min="0" max="100" value="50" id="balance" aria-label="Balance creativity and strategy"/>
+        <div id="balanceLabel" aria-live="polite" role="status"></div>
+      </div>
+    </section>
+    
+  <section class="zone" id="team-game">
+      <div class="step"><span class="icon">&#x1F46A;</span>Team Game</div>
+      <div>Great results need <b>team play</b>.<br />Who would you pick? Click to build a team:</div>
+      <div class="checkbox-group" id="teamChoices" role="group" aria-label="Team member selection">
+        <label>Designer <input type="checkbox" /></label>
+        <label>Marketer <input type="checkbox" /></label>
+        <label>Engineer <input type="checkbox" /></label>
+        <label>CEO <input type="checkbox" /></label>
+      </div>
+      <div class="team-tag" id="teamTag"></div>
+    </section>
+    
+    <section class="zone" id="sdm-action-zone">
+      <div class="step"><span class="icon">&#x1F680;</span>SDM in Action</div>
+      <div class="sdaction" id="sdm-action"></div>
+      <svg
+        id="refreshSdm"
+        class="refresh-icon"
+        viewBox="0 0 24 24"
+        xmlns="http://www.w3.org/2000/svg"
+        role="button"
+        aria-label="Refresh SDM action"
+        tabindex="0"
+      >
+        <circle cx="12" cy="12" r="10" fill="none" stroke="#51e3c2" stroke-width="2" />
+        <path fill="none" stroke="#51e3c2" stroke-width="2" d="M16 12l-4 4-4-4" />
+      </svg>
+    </section>
+    <section class="zone" id="quiz-zone">
+      <div class="step">🎓What's Your SDM Role?</div>
+      <button id="quizBtn" class="quiz-btn" disabled>Find out</button>
+      <div id="badge" class="badge" role="status" aria-live="polite"></div>
+    </section>
+  </main>
+
+
+<footer>
+    &copy; 2025 Strategic Design Management
+  </footer>
+
+  <script>
+    const puzzleData = [
+      { question: "Bus is crowded", solutions: [
+          { text: "Add additional bus stops on same route",     correct: false, feedback: "leads to delays."},
+          { text: "Increase bus capacity by modifying routes", correct: true}
+        ]
+      },
+      { question: "Cafe lines long", solutions: [
+          { text: "Add self-order kiosks", correct: true},
+          { text: "Hire more baristas",    correct: false, feedback: "More staff won't fix bad processes."}
+        ]
+      },
+      { question: "App confusing", solutions: [
+          { text: "Simplify interface",    correct: true},
+          { text: "Add flashy animations", correct: false, feedback: "Animations don't solve confusion."}
+        ]
+      },
+      { question: "Plastic waste", solutions: [
+          { text: "Use compostable packs", correct: true},
+          { text: "Make packaging thicker",correct: false, feedback: "Thicker packaging increases waste."}
+        ]
+      }
+    ];
+
+    let puzzleResults = {};
+    let sliderMoved = false;
+
+    function renderPuzzles() {
+      const container = document.getElementById('drag-puzzles');
+      container.innerHTML = '';
+      puzzleData.forEach((puzzle, idx) => {
+        const div = document.createElement('div');
+        div.className = 'puzzle-zone';
+        div.innerHTML = `
+          <div class="puzzle-desc">${puzzle.question}</div>
+          <div class="drag-contain" id="drag-contain${idx}">
+            <div id="drag${idx}0" class="draggable" draggable="true">${puzzle.solutions[0].text}</div>
+            <div id="drag${idx}1" class="draggable" draggable="true">${puzzle.solutions[1].text}</div>
+            <div id="drop${idx}" class="dropzone" tabindex="0" aria-label="Drop solution for puzzle ${idx + 1}">Drop solution here</div>
+          </div>
+          <div id="feedback${idx}" class="feedback"></div>`;
+        container.appendChild(div);
+
+        ['0','1'].forEach(j => {
+          const dragElem = document.getElementById(`drag${idx}${j}`);
+          dragElem.addEventListener('dragstart', e => {
+            e.dataTransfer.setData('text/plain', j);
+          });
+          const dropElem = document.getElementById(`drop${idx}`);
+          const feedbackElem = document.getElementById(`feedback${idx}`);
+          dropElem.addEventListener('dragover', e => e.preventDefault());
+          dropElem.addEventListener('drop', e => {
+            e.preventDefault();
+            if (dropElem.classList.contains('solved') || dropElem.classList.contains('wrong')) return;
+
+            const droppedIdx = e.dataTransfer.getData('text/plain');
+            const solution = puzzleData[idx].solutions[parseInt(droppedIdx, 10)];
+
+            dropElem.textContent = solution.text;
+            dropElem.classList.remove('solved', 'wrong');
+
+            if (solution.correct) {
+              dropElem.classList.add('solved');
+              dropElem.style.backgroundColor = '#27ae60';
+              dropElem.style.borderColor = '#1e8449';
+              dropElem.style.color = '#fff';
+              dropElem.style.fontWeight = '600';
+              dropElem.style.boxShadow = '0 0 8px #1e8449';
+
+              feedbackElem.textContent = 'Correct! That is a design-thinking solution.';
+              feedbackElem.style.color = '#276a31';
+              puzzleResults[idx] = true;
+            } else {
+              dropElem.classList.add('wrong');
+              dropElem.style.backgroundColor = '#e74c3c';
+              dropElem.style.borderColor = '#992d22';
+              dropElem.style.color = '#fff';
+              dropElem.style.fontWeight = '600';
+              dropElem.style.boxShadow = '0 0 8px #992d22';
+
+              feedbackElem.textContent = 'Wrong: ' + solution.feedback;
+              feedbackElem.style.color = '#b9333e';
+              puzzleResults[idx] = false;
+            }
+
+            document.getElementById(`drag${idx}0`).draggable = false;
+            document.getElementById(`drag${idx}1`).draggable = false;
+
+            updateQuizButton();
+            setTimeout(() => dropElem.scrollIntoView({ behavior: 'smooth', block: 'center' }), 250);
+          });
+        });
+      });
+    }
+
+    function updateQuizButton() {
+      const quizBtn = document.getElementById('quizBtn');
+      const badge = document.getElementById('badge');
+      const answeredCount = Object.keys(puzzleResults).length;
+      const correctCount = Object.values(puzzleResults).filter(Boolean).length;
+      const teamSelectedCount = [...document.querySelectorAll('#teamChoices input[type=checkbox]:checked')].length;
+      const slider = document.getElementById('balance');
+
+      if (answeredCount === puzzleData.length && teamSelectedCount > 0 && sliderMoved) {
+        quizBtn.disabled = false;
+      } else {
+        quizBtn.disabled = true;
+        badge.textContent = '';
+      }
+    }
+
+    document.getElementById('balance').addEventListener('input', e => {
+      sliderMoved = true;
+      const val = +e.target.value;
+      const label = document.getElementById('balanceLabel');
+      if (val < 33) label.textContent = '← Creative chaos';
+      else if (val > 66) label.textContent = 'Business as usual →';
+      else label.textContent = '🎯 Balanced Design';
+      updateQuizButton();
+    });
+
+    document.getElementById('teamChoices').addEventListener('change', () => {
+      const checkedBoxes = [...document.querySelectorAll('#teamChoices input[type=checkbox]:checked')];
+      const tag = document.getElementById('teamTag');
+      if (checkedBoxes.length === 0) {
+        tag.textContent = '';
+      } else if (checkedBoxes.length ===1) {
+        tag.textContent = `${checkedBoxes[0].parentElement.textContent.trim()} Solo`;
+      } else if (checkedBoxes.length === 2) {
+        tag.textContent = 'Small Team';
+      } else if (checkedBoxes.length === 3) {
+        tag.textContent = 'Collaborative Team';
+      } else if (checkedBoxes.length ===4) {
+        tag.textContent = 'Full Power Squad';
+      }
+      updateQuizButton();
+    });
+
+    document.getElementById('quizBtn').addEventListener('click', () => {
+      const badge = document.getElementById('badge');
+      const correctCount = Object.values(puzzleResults).filter(Boolean).length;
+      const teamCount = [...document.querySelectorAll('#teamChoices input[type=checkbox]:checked')].length;
+      const sliderVal = +document.getElementById('balance').value;
+      let role = 'Explorer';
+
+      if (correctCount === puzzleData.length) {
+        if (teamCount >= 3) {
+          if (sliderVal >= 33 && sliderVal <= 66) role = 'SDM Leader!';
+          else if (sliderVal < 33) role = 'Creative Visionary';
+          else role = 'Strategic Organizer';
+        } else if (teamCount === 2) role = 'Team Builder';
+        else if (teamCount === 1) role = 'Designer';
+        else role = 'Focused Specialist';
+      } else if (correctCount >= 2) {
+        role = 'Emerging Strategist';
+      }
+
+      badge.textContent = `You are: ${role}!`;
+    });
+
+   const sdmExamples = [
+      "A designer saw a busy shop. Instead of hiring more cashiers, she redesigned the queue as curved zones with games and clear signs. Customers enjoyed waiting, and sales went up!",
+      "A company kept launching new products that failed. SDM teams created a test-and-learn process using customer prototypes—product launches became more successful and faster.",
+      "Public parks were always empty. A design team turned them into event hubs, adding pop-up cafes, play spaces, and free wifi. The parks became city hotspots.",
+      "An app with clunky workflows frustrated employees. An SDM-led sprint mapped user pain points and simplified core tasks—productivity jumped, and morale followed."
+    ];
+
+    function refreshSDM() {
+      const idx = Math.floor(Math.random() * sdmExamples.length);
+      const el = document.getElementById("sdm-action");
+      el.textContent = sdmExamples[idx];
+    }
+
+    const refreshBtn = document.getElementById("refreshSdm");
+    refreshBtn.addEventListener("click", refreshSDM);
+    refreshBtn.addEventListener("keydown", (e) => {
+      if (e.key === "Enter" || e.key === " ") {
+        e.preventDefault();
+        refreshSDM();
+      }
+    });
+    refreshSDM();
+
+    // Initialize puzzles
+    renderPuzzles();
+  </script>
+</body>
+</html>
