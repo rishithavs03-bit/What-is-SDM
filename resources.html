@@ -20,6 +20,40 @@
     }
 
     /* Header */
+    header > div {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 1rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: nowrap;          /* Change this */
+}
+
+@media (max-width: 700px) {
+  header > div {
+    flex-wrap: wrap;           /* Allow wrap on small screens */
+    gap: 1rem;                 /* Optional spacing */
+  }
+  
+  header h1 {
+    flex: 1 1 100%;
+    margin-bottom: 0.5rem;
+  }
+  
+  nav {
+    flex: 1 1 100%;            /* Allow nav to take full width */
+    display: flex;
+    justify-content: center;   /* Center nav on small screen */
+    flex-wrap: wrap;           /* Wrap nav links */
+    gap: 0.5rem;               /* Space between nav links */
+  }
+  
+  nav a {
+    font-size: 0.95rem;
+    padding: 0.4rem 1rem;
+  }
+}
     header {
       width: 100%;
       background: linear-gradient(90deg, #1f1e1e, #1f1e1e);
@@ -334,3 +368,4 @@
   </script>
 </body>
 </html>
+
