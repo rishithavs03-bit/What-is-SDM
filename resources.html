@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Strategic Design Management Starter Pack</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    /* Base and reset */
+    *, *::before, *::after {
+      box-sizing: border-box;
+    }
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #f7f8fa;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      color: #333;
+    }
+
+    /* Header */
+    header {
+      width: 100%;
+      background: linear-gradient(90deg, #1f1e1e, #1f1e1e);
+      box-sizing: border-box;
+      user-select: none;
+    }
+    header > div {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    /* Logo container */
+    .logo {
+      max-height: 40px;
+      width: auto;
+      display: block;
+    }
+    nav {
+      display: flex;
+      gap: 1.5rem;
+      align-items: center;
+    }
+    nav a {
+      color: white;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 1rem;
+      padding: 0.25rem 0.5rem;
+      border-radius: 2px;
+      transition: background-color 0.3s ease, border-bottom 0.3s ease;
+      border-bottom: 3px solid transparent;
+    }
+    nav a:hover,
+    nav a:focus {
+      background-color: rgba(255,255,255,0.2);
+      outline: none;
+    }
+    nav a[aria-current="page"] {
+      border-bottom-color: #f3f0ff;
+      cursor: default;
+    }
+
+    /* Main content */
+    main {
+      flex-grow: 1;
+      max-width: 900px;
+      width: 90%;
+      margin: 2rem auto 3rem;
+    }
+    .instructions {
+      text-align: center;
+      color: #333333;
+      font-size: 1rem;
+      margin-bottom: 1.5rem;
+      user-select: none;
+    }
+
+    
+    h1 {
+      margin-bottom: 1rem;
+      color: #252525;
+    }
+    /* Filter buttons */
+    .filter-btns {
+      margin-bottom: 1.5rem;
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+    .filter-btn {
+      padding: 0.5rem 1rem;
+      font-weight: 600;
+      background: #eee;
+      border-radius: 20px;
+      cursor: pointer;
+      user-select: none;
+      border: 1px solid #ccc;
+      color: #1f1f1f;
+      transition: background-color 0.2s;
+    }
+    .filter-btn.active,
+    .filter-btn:hover {
+      background-color: #343434;
+      color: white;
+      border-color: #898a8a;
+    }
+    /* Resource list */
+    ul.resources-list {
+      list-style: none;
+      padding-left: 0;
+      color: #444;
+    }
+    li.resource-item {
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.07);
+      margin-bottom: 1rem;
+      padding: 1rem 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      transition: box-shadow 0.25s;
+    }
+    li.resource-item:hover {
+      box-shadow: 0 8px 16px rgba(0,0,0,0.12);
+    }
+    .resource-link {
+      color: #393a3a;
+      font-size: 1.1rem;
+      font-weight: 600;
+      text-decoration: none;
+      flex-grow: 1;
+    }
+    .resource-link:hover,
+    .resource-link:focus {
+      text-decoration: underline;
+      outline: none;
+    }
+    /* Tags */
+    .tag {
+  flex-shrink: 0;
+  padding: 0.25rem 0.6rem;
+  font-size: 0.85rem;
+  font-weight: 700;
+  border-radius: 12px;
+  user-select: none;
+  background: transparent;      /* No background fill */
+  border: 2px solid currentColor; /* Colored border same as text */
+  color: inherit;
+}
+
+/* Set text and border color for each tag type */
+.tag.article {
+  color: #f39c12;
+  border-color: #f39c12;
+}
+.tag.video {
+  color: #e74c3c;
+  border-color: #e74c3c;
+}
+.tag.book {
+  color: #2ecc71;
+  border-color: #2ecc71;
+}
+    /* Footer */
+    footer {
+      background: linear-gradient(90deg, #1f1e1e, #1f1e1e);
+      color: white;
+      text-align: center;
+      padding: 1rem 2rem;
+      font-size: 0.9rem;
+      user-select: none;
+      margin-top: auto;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div>
+      <div style="max-width: 1200px; margin: 0 auto; padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; user-select: none; width: 100%;">
+    <!-- Inline SVG logo with black fill -->
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2334.16 959.15" style="height: 40px; width: auto;" aria-label="Strategic Design Management Logo" role="img" focusable="false">
+      <defs>
+        <style>
+          .cls-1 {
+            fill: #ffffff;
+            stroke: #ffffff;
+            stroke-miterlimit: 10;
+            stroke-width: 2.83px;
+          }
+        </style>
+      </defs>
+      <path class="cls-1" d="M140.37,413.51v-147.57s-.38-52.28,42.32-94.98c42.7-42.7,92.55-35.62,92.55-35.62h278.04v138.87l-278.04.73v272.11h278.04v139.4h-278.04v135.19l278.04-1.53s63.13,0,96.45-35.23c33.32-35.23,36.26-67.02,36.26-67.02v-191.49s-6.26-51.26-30.51-73.21c-24.26-21.96-43.4-34.6-74.81-39.64H140.37Z"/>
+      <polygon class="cls-1" points="685.99 1.42 827.69 1.42 826.61 135.34 685.99 135.34 685.99 1.42"/>
+      <path class="cls-1" d="M826.61,135.34l1.09,139.6h405.89v411.51h-272.23v-272.94h-133.66v408.13h425.49s59.74-8.43,89.04-44.04c29.3-35.62,31.02-91.15,31.02-91.15v-411.51s-4.91-70.72-33.64-94.85c-28.72-24.13-54.26-41.23-106.02-44.74h-406.98Z"/>
+      <path class="cls-1" d="M1646.44,957.72s-47.94,1.15-91.02-33.32c-43.09-34.47-49.15-102.77-49.15-102.77h140.17v136.09Z"/>
+      <path class="cls-1" d="M141.72,686.44s-47.94,1.15-91.02-33.32C7.61,618.66,1.55,550.36,1.55,550.36h140.17v136.09Z"/>
+      <rect class="cls-1" x="1506.27" y="274.94" width="140.17" height="411.51"/>
+      <path class="cls-1" d="M1646.44,135.34s51,1.21,96.26,39.96c33.75,28.89,43.91,84.38,43.91,99.64h-140.17v-139.6Z"/>
+      <path class="cls-1" d="M1786.61,135.34v551.11h133.09v-411.51h139.4v411.51h272.86l.78,135.19h-133.28V274.94s-1.91-65.36-42.57-99.06c-30.05-24.91-64.6-36.13-98.81-40.53h-271.47Z"/>
+    </svg>
+
+    <nav aria-label="Primary site navigation" style="display: flex; gap: 1.5rem; align-items: center;">
+      <a href="index.html"  
+      style="color: white; font-weight: 600; 
+      font-size: 1rem; text-decoration: none;
+       padding: 0.25rem 0.5rem; border-bottom: 
+       3px solid transparent; border-radius: 2px;">Starter Pack</a>
+      <a href="sdmplayground.html" 
+      style="color: white; font-weight: 600; 
+      font-size: 1rem; text-decoration: none;
+       padding: 0.25rem 0.5rem; border-bottom:
+        3px solid transparent; border-radius: 2px;">Playground</a>
+        <a href="resources.html" aria-current="page" 
+      style="color: white; font-weight: 600; 
+      font-size: 1rem; text-decoration: none;
+       padding: 0.25rem 0.5rem; border-bottom: 
+       3px solid #f3f0ff; border-radius: 2px;">Advance Pack</a>
+    </nav>
+  </div>
+  </header>
+      <nav aria-label="Primary site navigation">
+        <a href="index.html">Starter Pack</a>
+        <a href="sdmplayground.html">Playground</a>
+        <a href="resources.html" aria-current="page">Advance Pack</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <h1>Recommended Resources</h1>
+
+    <div class="filter-btns" role="group" aria-label="Filter resources by type">
+      <button class="filter-btn active" data-filter="all" aria-pressed="true">All</button>
+      <button class="filter-btn" data-filter="article" aria-pressed="false">Articles</button>
+      <button class="filter-btn" data-filter="video" aria-pressed="false">Videos</button>
+      <button class="filter-btn" data-filter="book" aria-pressed="false">Books</button>
+    </div>
+
+    <ul class="resources-list" id="resourcesList">
+      <li class="resource-item" data-type="book">
+        <a href="https://timbrown.com" target="_blank" rel="noopener noreferrer" class="resource-link">Tim Brown – Change by Design</a>
+        <span class="tag book" aria-label="Book">Book</span>
+      </li>
+
+            <li class="resource-item" data-type="article">
+        <a href="https://www.thefountaininstitute.com/blog/what-is-strategic-design" target="_blank" rel="noopener noreferrer" class="resource-link">The Fountain Institute: What is Strategic Design?</a>
+        <span class="tag article" aria-label="Article">Article</span>
+      </li>
+
+      <li class="resource-item" data-type="article">
+        <a href="https://medium.com/salesforce-ux/what-is-strategy-design-why-does-it-matter-75aa56267299" target="_blank" rel="noopener noreferrer" class="resource-link">What is Strategy Design & Why Does It Matter?-Medium</a>
+        <span class="tag article" aria-label="Article">Article</span>
+      </li>
+
+       <li class="resource-item" data-type="article">
+        <a href="https://uxdesign.cc/the-making-of-a-strategic-designer-c83a2355a9e0" target="_blank" rel="noopener noreferrer" class="resource-link">The making of a strategic designer-Medium</a>
+        <span class="tag article" aria-label="Article">Article</span>
+      </li>
+
+      <li class="resource-item" data-type="article">
+        <a href="https://ideo.com" target="_blank" rel="noopener noreferrer" class="resource-link">IDEO Design Thinking Resources</a>
+        <span class="tag article" aria-label="Article">Article</span>
+      </li>
+      
+      <li class="resource-item" data-type="book">
+        <a href="https://strategicdesignbook.com/" target="_blank" rel="noopener noreferrer" class="resource-link">Strategic design</a>
+        <span class="tag book" aria-label="Book">Book</span>
+      </li>
+
+      <li class="resource-item" data-type="article">
+        <a href="https://uxdesign.cc" target="_blank" rel="noopener noreferrer" class="resource-link">UX Collective – Articles on Strategic Design</a>
+        <span class="tag article" aria-label="Article">Article</span>
+      </li>
+     
+      <li class="resource-item" data-type="video">
+        <a href="https://www.youtube.com/watch?v=Rpj7UNGmWHc" target="_blank" rel="noopener noreferrer" class="resource-link">Video: Strategic Design Management Overview</a>
+        <span class="tag video" aria-label="Video">Video</span>
+      </li>
+
+      <li class="resource-item" data-type="article">
+        <a href="https://www.dmi.org/page/Case_Studies" target="_blank" rel="noopener noreferrer" class="resource-link">Design Management Institute</a>
+        <span class="tag article" aria-label="Article">Article</span>
+      </li>
+
+       <li class="resource-item" data-type="book">
+        <a href="https://share.google/96jPEFuLGHDYujjJ3" target="_blank" rel="noopener noreferrer" class="resource-link">Design Management: Managing Design Strategy, Process and Implementation</a>
+        <span class="tag book" aria-label="book">Book</span>
+      </li>
+
+      <li class="resource-item" data-type="book">
+        <a href="https://share.google/cemGj7cPJGiMta2F" target="_blank" rel="noopener noreferrer" class="resource-link">The Design Way</a>
+        <span class="tag book" aria-label="book">Book</span>
+      </li>
+
+    </ul>
+  </main>
+
+  <footer>
+    &copy; 2025 Strategic Design Management
+  </footer>
+
+  <script>
+    const filterButtons = document.querySelectorAll('.filter-btn');
+    const resourcesList = document.getElementById('resourcesList');
+    const resources = Array.from(resourcesList.children);
+
+    filterButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        // Update active button styles and aria-pressed
+        filterButtons.forEach(b => {
+          b.classList.remove('active');
+          b.setAttribute('aria-pressed', 'false');
+        });
+        btn.classList.add('active');
+        btn.setAttribute('aria-pressed', 'true');
+
+        const filter = btn.getAttribute('data-filter');
+        resources.forEach(item => {
+          if (filter === 'all' || item.getAttribute('data-type') === filter) {
+            item.style.display = 'flex';
+          } else {
+            item.style.display = 'none';
+          }
+        });
+      });
+    });
+  </script>
+</body>
+</html>
